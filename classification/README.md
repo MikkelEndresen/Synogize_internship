@@ -4,7 +4,7 @@
 ## Overview
 
 ** Table of Contents **
-- [Cortex Classification](##introduction)
+- [Cortex Classification](#cortex-classification)
 
 
 The data comes from a Kaggle competition called "[Acquired Shoppers Challenge](https://www.kaggle.com/competitions/acquire-valued-shoppers-challenge/data)". 
@@ -180,5 +180,7 @@ I chose to use a randomised search to optimise the models parameters. Compared t
 
 **Probability thresholds**
 - Used different probability thresholds to improve recall. Settled on a probability threshold that gave almost 100% recal
+
+
 ## Cortex Classification
 
