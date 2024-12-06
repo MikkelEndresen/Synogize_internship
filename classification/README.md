@@ -19,6 +19,7 @@ It includes retail store data on a number of companies and brands. I used the th
 It is a large dataset of about 22GB and I used snowflake to manage and interact with all the data. 
 
 **Schemas:** 
+
 _history_
 **id** - A unique id representing a customer  
 **chain** - An integer representing a store chain  
@@ -28,8 +29,8 @@ _history_
 **repeater** - A boolean, equal to repeattrips > 0  
 **offerdate** - The date a customer received the offer
 
-_transactions  
-_**id** - see above  
+_transactions_
+**id** - see above  
 **chain** - see above  
 **dept** - An aggregate grouping of the Category (e.g. water)  
 **category** - The product category (e.g. sparkling water)  
@@ -41,8 +42,8 @@ _**id** - see above
 **purchasequantity** - The number of units purchased  
 **purchaseamount** - The dollar amount of the purchase
 
-_offers  
-_**offer** - see above  
+_offers_
+**offer** - see above  
 **category** - see above  
 **quantity** - The number of units one must purchase to get the discount  
 **company** - see above
