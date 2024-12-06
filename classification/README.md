@@ -9,7 +9,10 @@ Note, all code provided for this project are jupyter notebooks downloaded from s
 - [Cortex Classification](#cortex-classification)
 - [Data Overview](#brief-overview-of-the-data)
 - [Model Registry](#model-registry)
+- [KPI](#kpi)
+- [Snowflake Experience](#snowfalke-experience)
 
+----
 
 ## Brief overview of the data
 
@@ -50,9 +53,38 @@ _offers_<br>
 **brand** - see above
 
 
+## KPI
+
+To evaluate the business value of the model I defined a KPI.
+
+Unsure of the cost per offer, so plot it / create a function where you get the best return. 
+
+Define a baseline, which would be the current way of just selecting customers at random. 
+
+Cost per offer. Then TOTAL = return
+There is no way the baseline is better? Establish this!
+
+Value of a returning customer =  average shop x average num repeats after offer
+
+How many people returned x value of a customer / cost of sending offer
+
+
+Where I previously fucked up was I used only the history of people that had received offers. 73% of 27% will always be less than 27%, you genius. 73% of 100 is more tho. You bastard. Idiot.
+This as well:
+If I have a customer base of 100, and then I have a model with an accuracy of 70%. Would the number of money gained be TP times average gain per customer + TN * spend on each customer? Consider the test set size when you count this up to get the percentage!
+
+The final benefit of a model is: (percentage_returners * num_customers) * value_of_returning_customer - ((TP + FP) * cost of offer)
+
+TODO: KPI notebook where you calculate this and plot some graphs.
+
+Percentage of correct TP
+Even if recall only gives 26% TP, you have to consider TN. 
+
+
 ## Model Registry
 
 Link to notebook: []
+Link to Snowflake docs on model registry: []
 
 This is a snowflake function that allows you to save your ml models, when created by using the supported libraries like sklearn and pytorch. It comes with several different attributes, like you can set your evaluation metrics and store relevant information with the model. 
 
@@ -60,7 +92,7 @@ Interestingly there are two main methods of running inference on saved models.
 
 Time to log model:  53s
 - You set your metrics etc. separetely
-<todo> Create seperate ntoebook for this. Create several different random forest models with </todo>
+<todo> Create seperate ntoebook for this. Create several different random forest models with different numbers of parameters. Then train them, and try to save them to chech how long time it takes to log a model. Then, run inference on the various model sizes to get an estimate of how long it takes to train and run models of different sizes. You should be able to use that information to predict how long it takes to run and save other models. Maybe check for a NN. Make some nice plots:) </todo>
 
 
 **Model.run**
@@ -91,3 +123,121 @@ Main Takeaways:
 Read about it here: [Snowflake Cortex Classifcation](https://docs.snowflake.com/en/user-guide/ml-functions/classification)
 
 [Snowflake notebook with my code]( link )
+
+## Lazypredict results
+
+It's useful, but very resource-intensive and time-consuming to run. Used up more or less all $400 credits running on an S Warehouse. Ran for a few hours. 
+
+I used the results below to select RandomForestClassifier as the model to use. 
+
+
+| Model                         | Accuracy            | Balanced Accuracy  | ROC AUC             | F1 Score           | Time Taken          |
+| ----------------------------- | ------------------- | ------------------ | ------------------- | ------------------ | ------------------- |
+| NearestCentroid               | 0.6425715356741222  | 0.6024429963505807 | 0.6024429963505806  | 0.6564043966021561 | 0.08494138717651367 |
+| GaussianNB                    | 0.6515994002249157  | 0.5983896179894634 | 0.5983896179894633  | 0.6621297541370642 | 0.09207797050476074 |
+| KNeighborsClassifier          | 0.7113270023741097  | 0.5619663486869398 | 0.5619663486869397  | 0.678383020006725  | 43.834614753723145  |
+| BernoulliNB                   | 0.7312570286142697  | 0.5597742739418267 | 0.5597742739418267  | 0.6814532885750648 | 0.10557317733764648 |
+| BaggingClassifier             | 0.7315381731850557  | 0.5569189264412695 | 0.5569189264412695  | 0.6791366591845888 | 0.6451404094696045  |
+| PassiveAggressiveClassifier   | 0.6835561664375859  | 0.5569050775402822 | 0.5569050775402822  | 0.6655869668050571 | 0.15097713470458984 |
+| RandomForestClassifier        | 0.7315694114706985  | 0.5567610671857744 | 0.5567610671857744  | 0.6790080041395006 | 3.2399861812591553  |
+| XGBClassifier                 | 0.7315381731850557  | 0.5567037343111041 | 0.5567037343111041  | 0.6789555387745458 | 0.31449270248413086 |
+| DecisionTreeClassifier        | 0.7315381731850557  | 0.5567037343111041 | 0.5567037343111041  | 0.6789555387745458 | 0.13331866264343262 |
+| SVC                           | 0.7315381731850557  | 0.5567037343111041 | 0.5567037343111041  | 0.6789555387745458 | 1360.5421550273895  |
+| ExtraTreeClassifier           | 0.7315381731850557  | 0.5567037343111041 | 0.5567037343111041  | 0.6789555387745458 | 0.10158371925354004 |
+| ExtraTreesClassifier          | 0.7315381731850557  | 0.5567037343111041 | 0.5567037343111041  | 0.6789555387745458 | 3.810225009918213   |
+| AdaBoostClassifier            | 0.7315381731850557  | 0.5566678689560766 | 0.5566678689560766  | 0.6789253089049748 | 1.8869056701660156  |
+| RidgeClassifierCV             | 0.7315381731850557  | 0.5566678689560766 | 0.5566678689560766  | 0.6789253089049748 | 0.12720847129821777 |
+| RidgeClassifier               | 0.7315381731850557  | 0.5566678689560766 | 0.5566678689560766  | 0.6789253089049748 | 0.08763623237609863 |
+| LogisticRegression            | 0.7315381731850557  | 0.5566678689560766 | 0.5566678689560766  | 0.6789253089049748 | 0.11116838455200195 |
+| LinearSVC                     | 0.7315381731850557  | 0.5566678689560766 | 0.5566678689560766  | 0.6789253089049748 | 0.23384642601013184 |
+| LinearDiscriminantAnalysis    | 0.7315381731850557  | 0.5566678689560766 | 0.5566678689560766  | 0.6789253089049748 | 0.1454603672027588  |
+| CalibratedClassifierCV        | 0.7315381731850557  | 0.5566678689560766 | 0.5566678689560766  | 0.6789253089049748 | 0.7068722248077393  |
+| LGBMClassifier                | 0.7315381731850557  | 0.5566678689560766 | 0.5566678689560766  | 0.6789253089049748 | 0.3807377815246582  |
+| QuadraticDiscriminantAnalysis | 0.38607397226040235 | 0.5450668444800567 | 0.5450668444800568  | 0.3511332126252    | 0.10405135154724121 |
+| Perceptron                    | 0.7122329126577533  | 0.5270822052793005 | 0.5270822052793004  | 0.6509602160061491 | 0.17434334754943848 |
+| SGDClassifier                 | 0.7275709109084093  | 0.5                | 0.5                 | 0.6128367027455206 | 0.3092503547668457  |
+| DummyClassifier               | 0.7275709109084093  | 0.5                | 0.5                 | 0.6128367027455206 | 0.06411385536193848 |
+| NuSVC                         | 0.3881669373984756  | 0.4629030257268911 | 0.46290302572689124 | 0.3998141972849268 | 1763.2876596450806  |
+
+
+## Data Preparation
+
+## Random Forest model
+
+**Include link to notebook here!**
+
+
+**Data Preparation**
+- Easy to import from database into snowflake df's and then turn those into Pandas df's
+- Time to run the data imports and preparation (train/test split etc.) was less than 5 seconds. 
+
+**Performance Metric**
+- On the assumption that the FP cost was low I chose to use recall as my main performance metric. 
+- I also kept track of the confusion matrices and accuracy.
+
+**Hyperparameter optimisation**
+I chose to use a randomised search to optimise the models parameters. Compared to grid search I thought it made more sense because I did not have any great reasons for choosing the various values to include in the param_grid. Additionally, it is more time and cost efficient. That being said, given the training time of XXX, the randomised search returned ok parameters, but did take up a lot of resources. In retrospect, it would be helpful to run the model a couple of times myself at first to identify reasonable parameters to input into the param_grid.
+  
+
+**Imbalanced dataset problem**
+- I tried oversampling, undersampling, and smote and they gave improved results and were more or less identical to one another. 
+- Using class_weight=’balanced’ in the model parameters was the best option. 
+**Add some fucking numbers here. A cheeky table would be nice**
+
+Probability thresholds**
+- Used different probability thresholds to improve recall. Settled on a probability threshold that gave almost 100% recall, but at the same time did not completely neglect accuracy.
+
+<todo>Numbers on imbalanced dataset problem</todo>
+<todo>Numbers on probability thresholds</todo>
+<todo>Reshlts from the model!</todo>
+
+## Model Explainability
+
+I tried PDP, LIME, and SHAP as ways of explaining the output of my models. 
+
+I found LIME very useful for individual predictions, however, I’d say that SHAP did just a good a job and it can also be used for global metrics. As such, if you only have time for one method I would use SHAP. 
+
+PDP was not that helpful. Most of my features were not very impactful on the models output and they were categorical. Meaning that the PD plots were hard to read and draw insights from. 
+
+I tried dropping the less important features which resulted in an immediate drop in both accuracy and recall. 
+
+Based on the LIME I thought that there was a clear threshold were the TOTAL value would predict positive cases. Hence, I tried making it binary based on that feature, but that made the model much worse. 
+
+Lastly, after adding TOTAL to the features (a continuous variable) I looked at the PDP again. Using the graph I could see that the model was overfitting on the TOTAL feature. Arbitrarily reducing the depth of the model immediately improved this and increased the performance of the model. It was a great example of how PDP can also be used to understand and optimise your model. Explain this....
+
+Comparison of SHAP and sklearn inbuilt feature importance method. This is the “best” model, so it is still overfitting on the TOTAL feature. 
+
+
+| Feature                        | Rank (Feature Importance) | Importance     | Rank (SHAP) | SHAP  |
+| ------------------------------ | ------------------------- | -------------- | ----------- | ----- |
+| TOTAL                          | 1                         | 0.2944257161   | 2           | +0.1  |
+| OFFER_VALUE_5                  | 2                         | 0.2939765013   | 1           | +0.26 |
+| PREVIOUS_PURCHASE_INT          | 3                         | 0.1408925793   | 3           | +0.06 |
+| OFFER_VALUE_6                  | 4                         | 0.06691896675  | 4           | +0.04 |
+| OFFER_VALUE_3                  | 5                         | 0.06571482787  | 5           | +0.04 |
+| PREVIOUS_PURCHASE_CATEGORY_INT | 6                         | 0.03485369637  | 6           | +0.02 |
+| OFFER_VALUE_4                  | 7                         | 0.03269285364  | 9           | +0.02 |
+| OFFER_VALUE_1                  | 8                         | 0.02793670566  | NA          | NA    |
+| CHAIN_CAT_3                    | 9                         | 0.01294378687  | 7           | +0.02 |
+| CHAIN_CAT_1                    | 10                        | 0.01104610824  | 6           | +0.02 |
+| CHAIN_CAT_2                    | 11                        | 0.009993097731 | NA          | NA    |
+| OFFER_VALUE_2                  | 12                        | 0.008605160148 | NA          | NA    |
+
+
+
+<todo> Seperate notebook where you explore this! </todo>
+
+
+## Snowflake experience
+
+As mentioned I used snowflake to manage and interact with the data. Here are some takeaways from working with snowflake for the first time:
+
+Cost considerations:
+- The real-time cost estimation.
+	- When using the worksheets, costs are updated with each query in the logs so it is easy to monitor how much credits you are using. Additionally, resource monitors are able to monitor your usage and alert you.
+	- When using the notebooks you have to start it before running any cells. At which point it will import all your dependencies. There is no update to your costs until you end the notebook instance. So the resource monitor is not alerting you when you reach a desired threshold, and you might be able to run everything you wanted, but then the next day you open it up and you have run out of credits. 
+
+Notebook usability
+- Some basic comforts like keyboard shortcuts etc. that you are used to from working in code editors or on jupyter notebooks don't yet exist. 
+- The error handling is terrible. It is hard to debug both when writing SQL and Python as the messages often give little indication as to what failed. For SQL errors I would run them in a worksheet first to debug and then copy them over into a Notebook.
+- The notebooks are somewhat unreliable in that they will stop working or throw unexplainable edits. Usually fixed by restarting the notebook.
