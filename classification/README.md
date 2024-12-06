@@ -18,8 +18,7 @@ It includes retail store data on a number of companies and brands. I used the th
 
 It is a large dataset of about 22GB and I used snowflake to manage and interact with all the data. 
 
-**Schemas:** 
-
+**Schemas:** <br>
 _history_<br>
 **id** - A unique id representing a customer  
 **chain** - An integer representing a store chain  
