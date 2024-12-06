@@ -20,7 +20,7 @@ It is a large dataset of about 22GB and I used snowflake to manage and interact 
 
 **Schemas:** 
 
-_history_
+_history_<br>
 **id** - A unique id representing a customer  
 **chain** - An integer representing a store chain  
 **offer** - An id representing a certain offer  
@@ -29,7 +29,7 @@ _history_
 **repeater** - A boolean, equal to repeattrips > 0  
 **offerdate** - The date a customer received the offer
 
-_transactions_
+_transactions_<br>
 **id** - see above  
 **chain** - see above  
 **dept** - An aggregate grouping of the Category (e.g. water)  
@@ -42,7 +42,7 @@ _transactions_
 **purchasequantity** - The number of units purchased  
 **purchaseamount** - The dollar amount of the purchase
 
-_offers_
+_offers_<br>
 **offer** - see above  
 **category** - see above  
 **quantity** - The number of units one must purchase to get the discount  
