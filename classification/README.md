@@ -146,16 +146,22 @@ Total time 5.55s
 Snowflake has an "inbuilt" classification that is based on a gradient boost machine. I tried it on this classification problem in order to compare it to the performance of my manually defined models both in terms of accuracy, but also in usability and time. 
 
 Main Takeaways:
-- The data preparation is a bit inconvenient. You can use python, but it does require you to load the data into df's before creating a new table in snowfalke. The second option is to use sql so a lot of the inbuilt comforts form pandas is gone, but it is definietlely doable. Either way it is not too troublesome compared to the alternative. 
+- The data preparation is a bit inconvenient. You can use python, but it does require you to load the data into df's before creating a new table in snowflake. The second option is to use sql so a lot of the inbuilt comforts form pandas is gone, but it is definietlely doable. Either way it is not too troublesome compared to the alternative. 
 - It is very simple and easy to use. 
 - In terms of XAI, it has an inbuilt explainability function using SHAP, but I could not make it work despite utilising the provided code in the docs. However, it does have a feature importance function that works.
 - There are inbuilt functinos to calcualte the most common performance metrics and also to calcualte probability thresholds which I found very useful. 
+- A drawback with the inbuilt performance metrics is that they seem to be done on a part of the training set. I was unable to find the same metrics on the test set after making the predictions. Hence, I had to export the table to a pandas df and calculate the various metrics using sklearn. 
 
+**Metrics**
+
+Train time: 21
+Prediction time: 10
+
+Accuracy: 73.94%
+
+KPI - It outperforms the best random forest accuracy optimised model in terms of profit and loss for the business. It is the best model overall after cost per offer reaches around 37 dollars. 
 
 ![Cortex Model KPI Comparison](images/STREAMLIT_MEDIA_FILE_998F9BD8FE82470DA6809C465FBD6DA3.png)
-
-- Considerably slower to train and run than sklearn in notebooks. GET SOME ACTUAL NUMBERS HERE! <TODO>
-- Easy to use and results in a model comparable to the equivalent in sklearn. GET SOME ACTUAL NUMBERS HERE! <TODO>
 
 
 Read about it here: [Snowflake Cortex Classifcation](https://docs.snowflake.com/en/user-guide/ml-functions/classification)
@@ -233,6 +239,7 @@ Probability thresholds**
 <todo>Numbers on imbalanced dataset problem</todo>
 <todo>Numbers on probability thresholds</todo>
 <todo>Reshlts from the model!</todo>
+
 
 ## Model Explainability
 
