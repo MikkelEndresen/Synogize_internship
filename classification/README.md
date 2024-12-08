@@ -140,6 +140,7 @@ Load time: 3.54s
 Prediction time 0.36s
 Total time 5.55s
 
+
 ## Cortex Classification
 
 
@@ -166,7 +167,7 @@ KPI - It outperforms the best random forest accuracy optimised model in terms of
 
 Read about it here: [Snowflake Cortex Classifcation](https://docs.snowflake.com/en/user-guide/ml-functions/classification)
 
-[Snowflake notebook with my code]( link )
+[Snowflake notebook with my code](cortex.ipynb)
 
 ## Lazypredict results
 
