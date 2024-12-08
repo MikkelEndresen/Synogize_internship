@@ -69,6 +69,7 @@ To optimise for my KPI I have to select a performance metric for the model. That
 Here I can pick between accuracy, recall, f1, and precision, and they would all change the resulting KPI.
 
 **Recall**
+
  True Positives / (False Negatives + True Positives)
 
  I initally decided to use recall. The thought was that the cost per offer was low. So I did not really care about False Positives. Meaning that if the model decided to predict many False Positives it would have very little impact on the KPI. The problem with recall is that it does not care about TN. So I don't improve the KPI through a lower cost by more accurately targeting customers. A recall optimised model would have a hard time outperforming the baseline which is to give offers to about 50% of the customers, 30% of which will return. <todo> Test this </todo>
@@ -91,43 +92,15 @@ Here I can pick between accuracy, recall, f1, and precision, and they would all 
 
  It combines precision and recall. If either is low, the F1 score is low, if both are high the f1 score is high. 
 
-In summary, which metric a model should be guided by is, in this case, very dependent on the cost of sending out an offer. As I am unsure about what that cost is I have decided to provide a range of values and see for which costs each model performs best. I will make them predict on the full dataset, but only allow for the same number of offers as the baseline which is 50% of the dataset. 
 
+In summary, which metric a model should be guided by is, in this case, very dependent on the cost of sending out an offer. As I am unsure about what that cost is I have decided to provide a range of values and see for which costs each model performs best.
 
+**Results**
 
-----
-Where I previously fucked up was I used only the history of people that had received offers. 73% of 27% will always be less than 27%, you genius. 73% of 100 is more tho. You bastard. Idiot.
-This as well:
-If I have a customer base of 100, and then I have a model with an accuracy of 70%. Would the number of money gained be TP times average gain per customer + TN * spend on each customer? Consider the test set size when you count this up to get the percentage!
+I calculated the profit by finding a value_of_returning_customer nuber based on the avereage spend per shop and the average number of repeattrips. The profit for a model would then be number of true positives times the value_of_returning_customer minus all the positive predictions times the cost_of_offer.
+After running this for a ranging cost on all models I found that they are better in different scenarios. From 0.5 to aronund 23 dollars cost per offer, the baseline performs best. Meaning that the default version of randomly sending out offers is best. Then my recall optimised model takes over. Next, at around cost 37 and on the accuracy model performs best. The reason for this is that the cost of offers have risen so high that it is beneficial to predict the true negatives. 
 
-The final benefit of a model is: (percentage_returners * num_customers) * value_of_returning_customer - ((TP + FP) * cost of offer)
-
-TODO: KPI notebook where you calculate this and plot some graphs.
-
-Percentage of correct TP
-Even if recall only gives 26% TP, you have to consider TN.  or maybe not. Go over dataset and make the prediction until you find 100k. 160k customers given offer out of 300k total. 
-
-Also note that you are giving offers to 32k customers at random. 
-If you can predict precision with 97% accuracy you could give an offer to 32k customers and have 97% of them become returners. 
-Baseline is 30%, but like that was on 100k ish customers. If I can have a prediction with 31% correct TP prediction that is better cause I can select different 100k customers. There are plenty to choose from. 
-
-% actual positives / % positives predicted 
-which essentially is precision. 
-
-
-To evaluate the business value of the model I defined a KPI.
-
-Unsure of the cost per offer, so plot it / create a function where you get the best return. 
-
-Define a baseline, which would be the current way of just selecting customers at random. 
-
-Cost per offer. Then TOTAL = return
-There is no way the baseline is better? Establish this!
-
-Value of a returning customer =  average shop x average num repeats after offer
-
-How many people returned x value of a customer / cost of sending offer
-
+There is one error with my results that I made when desigining this experiment. Since I need the offers to predict whether a customer becomes a repeater or not, I was unable to make the prediction on the full dataset as only aroung 50% of the customers received offers. If I had been able to forsee this I could have tried to make my prediction without those features. That means that the baseline would be to randomly select 50% of the dataset. And of taht 50% around 30% were returners. However, with a precision or accuracy model I might be able to pick almost all the returners from the full dataset doubling the number of returners. This is a great usecase for these models that can be explored later. 
 ---
 
 
