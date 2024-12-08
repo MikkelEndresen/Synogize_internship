@@ -98,7 +98,11 @@ In summary, which metric a model should be guided by is, in this case, very depe
 **Results**
 
 I calculated the profit by finding a value_of_returning_customer nuber based on the avereage spend per shop and the average number of repeattrips. The profit for a model would then be number of true positives times the value_of_returning_customer minus all the positive predictions times the cost_of_offer.
-After running this for a ranging cost on all models I found that they are better in different scenarios. From 0.5 to aronund 23 dollars cost per offer, the baseline performs best. Meaning that the default version of randomly sending out offers is best. Then my recall optimised model takes over. Next, at around cost 37 and on the accuracy model performs best. The reason for this is that the cost of offers have risen so high that it is beneficial to predict the true negatives. 
+After running this for a ranging cost on all models I found that they are better in different scenarios. As you can see on the chart, from 0.5 to around 23 dollars cost per offer, the baseline performs best. Meaning that the default version of randomly sending out offers is best. Then my recall optimised model takes over. Next, at around cost 37 and on the accuracy model performs best. The reason for this is that the cost of offers have risen so high that it is beneficial to predict the true negatives. 
+
+
+![Results](classification/images/STREAMLIT_MEDIA_FILE_7F07999F619E4E49BD6697CA7DE8384A.png "Test")
+
 
 There is one error with my results that I made when desigining this experiment. Since I need the offers to predict whether a customer becomes a repeater or not, I was unable to make the prediction on the full dataset as only aroung 50% of the customers received offers. If I had been able to forsee this I could have tried to make my prediction without those features. That means that the baseline would be to randomly select 50% of the dataset. And of taht 50% around 30% were returners. However, with a precision or accuracy model I might be able to pick almost all the returners from the full dataset doubling the number of returners. This is a great usecase for these models that can be explored later. 
 ---
