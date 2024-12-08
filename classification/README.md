@@ -114,27 +114,31 @@ View the notebook I used to calculate these results here: [KPI](kpi.ipynb)
 
 ## Model Registry
 
-Link to notebook: []
-Link to Snowflake docs on model registry: []
+[Notebook](model_registry.ipynb)
+Link to Snowflake docs on model registry: [link](https://docs.snowflake.com/en/developer-guide/snowflake-ml/model-registry/overview#calling-model-methods)
 
-This is a snowflake function that allows you to save your ml models, when created by using the supported libraries like sklearn and pytorch. It comes with several different attributes, like you can set your evaluation metrics and store relevant information with the model. 
+This is a snowflake function that allows you to save your ml models when created by using the supported libraries like sklearn and pytorch. It comes with several different attributes, for example, like you can set your evaluation metrics and store relevant information with the model. 
+
+It takes about 55s to log the model.
 
 Interestingly there are two main methods of running inference on saved models. 
 
-Time to log model:  53s
-- You set your metrics etc. separetely
-<todo> Create seperate ntoebook for this. Create several different random forest models with different numbers of parameters. Then train them, and try to save them to chech how long time it takes to log a model. Then, run inference on the various model sizes to get an estimate of how long it takes to train and run models of different sizes. You should be able to use that information to predict how long it takes to run and save other models. Maybe check for a NN. Make some nice plots: </todo>
-
-
 **Model.run**
 
-It is when you have a reference to the model, and then call the inbuilt snoiwflake ml function to run it. meaning you don't load the model back into your notebook. You give it the X_test data and the function_name "predict". This takes about 6s, with some variability. I put it in a loop running it multiple times to see whether it stored the model on the backend in cache or something similar to improve inference speed, but no. Takes the same amount of time. 
+Using model.run, you simply call the reference to your model. Then you use the inbuilt model.run function to run it. This means you don't load the model back into your notebook, hence the low load time. The load time here refers to the time it takes to reference the correct version of your model in the registry. You pass the function the X_test data and the specified function you wish to run, in this case "predict". It returns the predictions in around 5s
+
+Load time: 0.45s
+Prediction time: 5.10s
+Total time 5.55s
 
 
 **Model.predict**
 
-In this case you load the model back into your workspace/notebook and then call model.predict like you would normally. It takes just under 6s, 5.8 ish, to load the model back into the notebokk and then 0.35s to do the prediction. Preferable if you have to do multiple predictions with different datasets. 
+In this case you load the model back into your workspace/notebook and then call model.predict like you would normally. It takes just under 6s, 5.8 ish, to load the model back into the notebook and then 0.35s to do the prediction. This method is preferable if you have to do multiple predictions in one session.  
 
+Load time: 3.54s
+Prediction time 0.36s
+Total time 5.55s
 
 ## Cortex Classification
 
