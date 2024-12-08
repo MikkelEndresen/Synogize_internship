@@ -111,10 +111,10 @@ View the notebook I used to calculate these results here: [KPI](kpi.ipynb)
 ---
 
 
-
 ## Model Registry
 
 [Notebook](model_registry.ipynb)
+
 Link to Snowflake docs on model registry: [link](https://docs.snowflake.com/en/developer-guide/snowflake-ml/model-registry/overview#calling-model-methods)
 
 This is a snowflake function that allows you to save your ml models when created by using the supported libraries like sklearn and pytorch. It comes with several different attributes, for example, like you can set your evaluation metrics and store relevant information with the model. 
@@ -150,6 +150,9 @@ Main Takeaways:
 - It is very simple and easy to use. 
 - In terms of XAI, it has an inbuilt explainability function using SHAP, but I could not make it work despite utilising the provided code in the docs. However, it does have a feature importance function that works.
 - There are inbuilt functinos to calcualte the most common performance metrics and also to calcualte probability thresholds which I found very useful. 
+
+
+![Cortex Model KPI Comparison](images/STREAMLIT_MEDIA_FILE_998F9BD8FE82470DA6809C465FBD6DA3.png)
 
 - Considerably slower to train and run than sklearn in notebooks. GET SOME ACTUAL NUMBERS HERE! <TODO>
 - Easy to use and results in a model comparable to the equivalent in sklearn. GET SOME ACTUAL NUMBERS HERE! <TODO>
