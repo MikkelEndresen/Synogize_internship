@@ -106,7 +106,7 @@ After running this for a ranging cost on all models I found that they are better
 
 There is one error with my results that I made when desigining this experiment. Since I need the offers to predict whether a customer becomes a repeater or not, I was unable to make the prediction on the full dataset as only aroung 50% of the customers received offers. If I had been able to forsee this I could have tried to make my prediction without those features. That means that the baseline would be to randomly select 50% of the dataset. And of taht 50% around 30% were returners. However, with a precision or accuracy model I might be able to pick almost all the returners from the full dataset doubling the number of returners. This is a great usecase for these models that can be explored later. 
 
-View the notebook I used to calculate these results here: [KPI](images/kpi.ipynb)
+View the notebook I used to calculate these results here: [KPI](kpi.ipynb)
 
 ---
 
