@@ -5,6 +5,8 @@
 
 Note, all code provided for this project are jupyter notebooks downloaded from snowflake. As such, they include functions exclusive to snowflake and are not possible to run outside of a snowflake environment. 
 
+Snowflake compute wh size = XS
+
 **Table of Contents**
 - [Cortex Classification](#cortex-classification)
 - [Data Overview](#brief-overview-of-the-data)
@@ -55,6 +57,64 @@ _offers_<br>
 
 ## KPI
 
+So to evaluate the effect the implementation of this machine learning model would have one the business itself I need to define a KPI. In this case I am using profit as the kpi. This allows me to establish the estimated profit they recevied from sending out offers to random customers, vs sending out offers to an equal amount of customers selected by my machine learning model. 
+
+I am making the assumption that the cost per offer of something like this woudl be fairly low, but I will get results with various values to compare when it is the most beneficial to use the model. 
+
+
+### Performance Metric
+
+To optimise for my KPI I have to select a performance metric for the model. That means what metric I use to evluate and train it on such that it maximises the KPI. 
+
+Here I can pick between accuracy, recall, f1, and precision, and they would all change the resulting KPI.
+
+**Recall**
+ True Positives / (False Negatives + True Positives)
+
+ I initally decided to use recall. The thought was that the cost per offer was low. So I did not really care about False Positives. Meaning that if the model decided to predict many False Positives it would have very little impact on the KPI. The problem with recall is that it does not care about TN. So I don't improve the KPI through a lower cost by more accurately targeting customers. A recall optimised model would have a hard time outperforming the baseline which is to give offers to about 50% of the customers, 30% of which will return. <todo> Test this </todo>
+
+**Precision**
+
+ (True Positives) / (True Positives + False Positives)
+
+ The formual above indicates that a model trained using precision as the performance metric would attempt to maximise the number of true positives and minimise the number of false positives. So it is trying to be "precise" in that it wants to accurately predict when a customer will return with a high degree of certainty. This means that it might be able to more efficiently be able to identify the majority of the customers that would return upon receiving an offer. That being said it is more likely than recall to miss some true positive cases. 
+
+**Accuracy**
+
+ Accuracy = (True Positives + True Negatives) / (True Positives + True Negatives + False Positives + False Negatives)
+
+ As the formula tells us, a model trained for accuracy attempts to maximise the number of true predicitons. Both true negatives and true positives. Compared to recall, it will have less cases of False Positives, and compared to precision it will have less cases of False Negatives. Meaning that overall it will be more accurate, but might suffer compared to recall if the cost of a FP is low or compared to precision if cost of FP is high. 
+
+**F1 Score**
+
+ 2 * (Precision * Recall) / (Precision + Recall)
+
+ It combines precision and recall. If either is low, the F1 score is low, if both are high the f1 score is high. 
+
+In summary, which metric a model should be guided by is, in this case, very dependent on the cost of sending out an offer. As I am unsure about what that cost is I have decided to provide a range of values and see for which costs each model performs best. I will make them predict on the full dataset, but only allow for the same number of offers as the baseline which is 50% of the dataset. 
+
+
+
+----
+Where I previously fucked up was I used only the history of people that had received offers. 73% of 27% will always be less than 27%, you genius. 73% of 100 is more tho. You bastard. Idiot.
+This as well:
+If I have a customer base of 100, and then I have a model with an accuracy of 70%. Would the number of money gained be TP times average gain per customer + TN * spend on each customer? Consider the test set size when you count this up to get the percentage!
+
+The final benefit of a model is: (percentage_returners * num_customers) * value_of_returning_customer - ((TP + FP) * cost of offer)
+
+TODO: KPI notebook where you calculate this and plot some graphs.
+
+Percentage of correct TP
+Even if recall only gives 26% TP, you have to consider TN.  or maybe not. Go over dataset and make the prediction until you find 100k. 160k customers given offer out of 300k total. 
+
+Also note that you are giving offers to 32k customers at random. 
+If you can predict precision with 97% accuracy you could give an offer to 32k customers and have 97% of them become returners. 
+Baseline is 30%, but like that was on 100k ish customers. If I can have a prediction with 31% correct TP prediction that is better cause I can select different 100k customers. There are plenty to choose from. 
+
+% actual positives / % positives predicted 
+which essentially is precision. 
+
+
 To evaluate the business value of the model I defined a KPI.
 
 Unsure of the cost per offer, so plot it / create a function where you get the best return. 
@@ -68,17 +128,8 @@ Value of a returning customer =  average shop x average num repeats after offer
 
 How many people returned x value of a customer / cost of sending offer
 
+---
 
-Where I previously fucked up was I used only the history of people that had received offers. 73% of 27% will always be less than 27%, you genius. 73% of 100 is more tho. You bastard. Idiot.
-This as well:
-If I have a customer base of 100, and then I have a model with an accuracy of 70%. Would the number of money gained be TP times average gain per customer + TN * spend on each customer? Consider the test set size when you count this up to get the percentage!
-
-The final benefit of a model is: (percentage_returners * num_customers) * value_of_returning_customer - ((TP + FP) * cost of offer)
-
-TODO: KPI notebook where you calculate this and plot some graphs.
-
-Percentage of correct TP
-Even if recall only gives 26% TP, you have to consider TN. 
 
 
 ## Model Registry
@@ -92,7 +143,7 @@ Interestingly there are two main methods of running inference on saved models.
 
 Time to log model:  53s
 - You set your metrics etc. separetely
-<todo> Create seperate ntoebook for this. Create several different random forest models with different numbers of parameters. Then train them, and try to save them to chech how long time it takes to log a model. Then, run inference on the various model sizes to get an estimate of how long it takes to train and run models of different sizes. You should be able to use that information to predict how long it takes to run and save other models. Maybe check for a NN. Make some nice plots:) </todo>
+<todo> Create seperate ntoebook for this. Create several different random forest models with different numbers of parameters. Then train them, and try to save them to chech how long time it takes to log a model. Then, run inference on the various model sizes to get an estimate of how long it takes to train and run models of different sizes. You should be able to use that information to predict how long it takes to run and save other models. Maybe check for a NN. Make some nice plots: </todo>
 
 
 **Model.run**
@@ -162,6 +213,8 @@ I used the results below to select RandomForestClassifier as the model to use.
 
 ## Data Preparation
 
+Explain this. 
+
 ## Random Forest model
 
 **Include link to notebook here!**
@@ -169,11 +222,14 @@ I used the results below to select RandomForestClassifier as the model to use.
 
 **Data Preparation**
 - Easy to import from database into snowflake df's and then turn those into Pandas df's
-- Time to run the data imports and preparation (train/test split etc.) was less than 5 seconds. 
+- Time to run the data imports, convert to pandas df, and do the train test split was aorun 1.5s. 
 
 **Performance Metric**
 - On the assumption that the FP cost was low I chose to use recall as my main performance metric. 
 - I also kept track of the confusion matrices and accuracy.
+
+In theory, using recall would maximise the result of the model in terms of the business usecase. 
+However, for this project, the baseline is to predict everyone as TP. Meaning that all the customers receive an offer. So if I train a model using recall, the best it can do is to predict everyone as TP... That is why I must choose precision. So precision is TP / TP + FP. Meaning that if the model has a high precision it is very likely that the customer is a returner when it predicts it to be. I could use accuracy, but given the low cost of predicting negative instances wrongly I prefer precision. 
 
 **Hyperparameter optimisation**
 I chose to use a randomised search to optimise the models parameters. Compared to grid search I thought it made more sense because I did not have any great reasons for choosing the various values to include in the param_grid. Additionally, it is more time and cost efficient. That being said, given the training time of XXX, the randomised search returned ok parameters, but did take up a lot of resources. In retrospect, it would be helpful to run the model a couple of times myself at first to identify reasonable parameters to input into the param_grid.
