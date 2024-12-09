@@ -228,6 +228,7 @@ However, for this project, the baseline is to predict everyone as TP. Meaning th
 **Hyperparameter optimisation**
 I chose to use a randomised search to optimise the models parameters. Compared to grid search I thought it made more sense because I did not have any great reasons for choosing the various values to include in the param_grid. Additionally, it is more time and cost efficient. That being said, given the training time of XXX, the randomised search returned ok parameters, but did take up a lot of resources. In retrospect, it would be helpful to run the model a couple of times myself at first to identify reasonable parameters to input into the param_grid.
   
+  Time to do this:
 
 **Imbalanced dataset problem**
 - I tried oversampling, undersampling, and smote and they gave improved results and were more or less identical to one another. 
@@ -243,22 +244,17 @@ Probability thresholds**
 
 ## Results
 
+Some selected results displayed
+
 | Model Name | Accuracy | Recall | F1 | Precision | Training Time (s) | Test Time (s) |
 |------------|-----------|-------|----|-----------|-------------------|---------------|
-| Random Forest with optimal params | 0.6523491191 | 0.2956083018 | N.A   | 62.923414946 | 1.899834394 | 
-
-
-
-
-| RF-optimal-params-class_weight=balanced          | 0.627514682 | 0.3746130031 | 2    | 63.089206219 | 2.130150557 | `{"bootstrap": true, "ccp_alpha": 0.0, "class_weight": "balanced", "criterion": "gini", "max_depth": null, "max_features": "log2", "max_leaf_nodes": null, "max_samples": null, "min_impurity_decrease": 0.0, "min_samples_leaf": 1, "min_samples_split": 5, "min_weight_fraction_leaf": 0.0, "monotonic_cst": null, "n_estimators": 200, "n_jobs": null, "oob_score": false, "random_state": null, "verbose": 0, "warm_start": false}` | 0          | 0              | 2024-12-05 21:21:37.954 |
-| RF-optimal-params-undersampled                   | 0.5559790079 | 0.5530329091 | 3    | 30.019137383 | 1.679876804 | `{"bootstrap": true, "ccp_alpha": 0.0, "class_weight": null, "criterion": "gini", "max_depth": null, "max_features": "log2", "max_leaf_nodes": null, "max_samples": null, "min_impurity_decrease": 0.0, "min_samples_leaf": 1, "min_samples_split": 5, "min_weight_fraction_leaf": 0.0, "monotonic_cst": null, "n_estimators": 200, "n_jobs": null, "oob_score": false, "random_state": null, "verbose": 0, "warm_start": false}` | 0          | 0              | 2024-12-05 21:24:18.662 |
-| RF-optimal-params-oversampled                    | 0.6239535174 | 0.3658984061 | 4    | 91.528553724 | 2.443916559 | `{"bootstrap": true, "ccp_alpha": 0.0, "class_weight": null, "criterion": "gini", "max_depth": null, "max_features": "log2", "max_leaf_nodes": null, "max_samples": null, "min_impurity_decrease": 0.0, "min_samples_leaf": 1, "min_samples_split": 5, "min_weight_fraction_leaf": 0.0, "monotonic_cst": null, "n_estimators": 200, "n_jobs": null, "oob_score": false, "random_state": null, "verbose": 0, "warm_start": false}` | 0          | 0              | 2024-12-05 21:26:27.879 |
-| RF-optimal-params-smote                          | 0.6405722854 | 0.3224400871 | 5    | 81.703820705 | 2.221253395 | `{"bootstrap": true, "ccp_alpha": 0.0, "class_weight": null, "criterion": "gini", "max_depth": null, "max_features": "log2", "max_leaf_nodes": null, "max_samples": null, "min_impurity_decrease": 0.0, "min_samples_leaf": 1, "min_samples_split": 5, "min_weight_fraction_leaf": 0.0, "monotonic_cst": null, "n_estimators": 200, "n_jobs": null, "oob_score": false, "random_state": null, "verbose": 0, "warm_start": false}` | 0          | 0              | 2024-12-05 21:28:59.093 |
-| RF-Default                                       | 0.6371048357 | 0.3255360624 | 6    | 32.185394287 | 1.175194263 | `{"bootstrap": true, "ccp_alpha": 0.0, "class_weight": null, "criterion": "gini", "max_depth": null, "max_features": "sqrt", "max_leaf_nodes": null, "max_samples": null, "min_impurity_decrease": 0.0, "min_samples_leaf": 1, "min_samples_split": 2, "min_weight_fraction_leaf": 0.0, "monotonic_cst": null, "n_estimators": 100, "n_jobs": null, "oob_score": false, "random_state": null, "verbose": 0, "warm_start": false}` | 0          | 0              | 2024-12-05 21:29:58.825 |
-
-
-
-
+| Random Forest Optimal Recall | 0.6523491191 | 0.2956083018 | N.A  | N.A. | 62.923414946 + | 1.899834394 | 
+| Random Forest Default |,0.6371048357 | 0.3255360624 | N.A  | N.A. | 32.185394287 | 1.175194263 | 
+| Random Forest Undersampled Threshold - 0.0289 | 0.3164125953 | 0.9566563467 | N.A  | N.A. | 15.168264627 | 1.011759043 | 
+| Random Forest Optimal Precision | NA. | 0.1787639032 | N.A  | 0.46873120865904994 | 20.449402094 | 0.5532448292 | 
+| Random Forest Optimal Accuracy | 0.7210733475 | 0.1776172457 | 0.46825876662636035 | 0.2575442680189542 | 21.262335539 | 0.5760011673 |
+| Random Forest Optimal f1 Score | 0.5548856679, | 0.5525742461 |  0.40348306610290113  | 0.3177502307793749 | 30.212080479| 1.874590874 |
+| Cortex | 0.7393789829, | 0.1820393975 | N.A.| N.A. |21.0 | 10.0 |
 
 
 ## Model Explainability
