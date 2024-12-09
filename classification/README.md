@@ -13,6 +13,9 @@ Snowflake compute wh size = XS
 - [Model Registry](#model-registry)
 - [KPI](#kpi)
 - [Snowflake Experience](#snowfalke-experience)
+- [Data Preparation](#data-preparation)
+- [Random Forest Model](#random-forest-model)
+- [Lazypredict](#lazypredict-results)
 
 ----
 
