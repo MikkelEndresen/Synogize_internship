@@ -211,36 +211,28 @@ Explain this.
 
 ## Random Forest model
 
-**Include link to notebook here!**
-
-
 **Data Preparation**
 - Easy to import from database into snowflake df's and then turn those into Pandas df's
 - Time to run the data imports, convert to pandas df, and do the train test split was aorun 1.5s. 
 
 **Performance Metric**
-- On the assumption that the FP cost was low I chose to use recall as my main performance metric. 
-- I also kept track of the confusion matrices and accuracy.
-
-In theory, using recall would maximise the result of the model in terms of the business usecase. 
-However, for this project, the baseline is to predict everyone as TP. Meaning that all the customers receive an offer. So if I train a model using recall, the best it can do is to predict everyone as TP... That is why I must choose precision. So precision is TP / TP + FP. Meaning that if the model has a high precision it is very likely that the customer is a returner when it predicts it to be. I could use accuracy, but given the low cost of predicting negative instances wrongly I prefer precision. 
+- On the assumption that the FP cost was low I chose to use recall as my main performance metric. However, as you can read about in the KPI section I also ran the models for F1, accuracy, and precision.
 
 **Hyperparameter optimisation**
-I chose to use a randomised search to optimise the models parameters. Compared to grid search I thought it made more sense because I did not have any great reasons for choosing the various values to include in the param_grid. Additionally, it is more time and cost efficient. That being said, given the training time of XXX, the randomised search returned ok parameters, but did take up a lot of resources. In retrospect, it would be helpful to run the model a couple of times myself at first to identify reasonable parameters to input into the param_grid.
-  
-  Time to do this:
+I chose to use a randomised search to optimise the models parameters. Compared to grid search I thought it made more sense because I did not have any great reasons for choosing the various values to include in the param_grid. Additionally, it is more time and cost efficient. That being said, given the training time of around 10 minutes (for each mdoel), the randomised search returned ok parameters, but did take up a lot of resources. In retrospect, it would be helpful to run the model a couple of times myself at first to identify reasonable parameters to input into the param_grid.
+
+In all cases the models saw significant improvement with hyperparameter optimisation compared to default so it is recommended. 
 
 **Imbalanced dataset problem**
-- I tried oversampling, undersampling, and smote and they gave improved results and were more or less identical to one another. 
-- Using class_weight=’balanced’ in the model parameters was the best option. 
-**Add some fucking numbers here. A cheeky table would be nice**
+The dataset consisted of 27% positive cases and the rest negative. To deal with this I tried undersampling, oversampling, smote, and the Random FOrest inbuilt parameter class_weight='balanced'. For recall, the models improved slightly using these methods, but mostly with class_weight='balanced'. However, the improvement was marginal and also had a negative effect on the accuracy of the model. 
 
-Probability thresholds**
-- Used different probability thresholds to improve recall. Settled on a probability threshold that gave almost 100% recall, but at the same time did not completely neglect accuracy.
+In terms of training time, undersampling halved the training time, oversampling and smote was about 50% slower, and class_weight parameter had a training time close to a default model. 
 
-<todo>Numbers on imbalanced dataset problem</todo>
-<todo>Numbers on probability thresholds</todo>
-<todo>Reshlts from the model!</todo>
+
+**Probability thresholds**
+To improve recall I looked at different probability thresholds. As expected it significantly increased the recall perfomrance from 0.29 to 0.32
+
+[Notebook with the relevant code](RandomForest.ipynb)
 
 ## Results
 
@@ -250,7 +242,7 @@ Some selected results displayed
 |------------|-----------|-------|----|-----------|-------------------|---------------|
 | Random Forest Optimal Recall | 0.6523491191 | 0.2956083018 | N.A  | N.A. | 62.923414946 + | 1.899834394 | 
 | Random Forest Default |,0.6371048357 | 0.3255360624 | N.A  | N.A. | 32.185394287 | 1.175194263 | 
-| Random Forest Undersampled Threshold - 0.0289 | 0.3164125953 | 0.9566563467 | N.A  | N.A. | 15.168264627 | 1.011759043 | 
+| Random Forest Optimal Recall Threshold - 0.0289 | 0.3164125953 | 0.9566563467 | N.A  | N.A. | 15.168264627 | 1.011759043 | 
 | Random Forest Optimal Precision | NA. | 0.1787639032 | N.A  | 0.46873120865904994 | 20.449402094 | 0.5532448292 | 
 | Random Forest Optimal Accuracy | 0.7210733475 | 0.1776172457 | 0.46825876662636035 | 0.2575442680189542 | 21.262335539 | 0.5760011673 |
 | Random Forest Optimal f1 Score | 0.5548856679, | 0.5525742461 |  0.40348306610290113  | 0.3177502307793749 | 30.212080479| 1.874590874 |
@@ -261,18 +253,16 @@ Some selected results displayed
 
 I tried PDP, LIME, and SHAP as ways of explaining the output of my models. 
 
-I found LIME very useful for individual predictions, however, I’d say that SHAP did just a good a job and it can also be used for global metrics. As such, if you only have time for one method I would use SHAP. 
+I found LIME very useful for individual predictions, however, I’d say that SHAP did just a good a job and it can also be used for global metrics. As such, if you only have time for one method I would use SHAP. I did use LIME to discover that it seemed there was a clear therhsold were the TOTAL feature would predict positive cases. Hence, I tried making it a binary feature. Unfortunately this made the models performance much worse. 
 
-PDP was not that helpful. Most of my features were not very impactful on the models output and they were categorical. Meaning that the PD plots were hard to read and draw insights from. 
+PDP was not that helpful. Most of my features were not very impactful on the models output and they were categorical. Meaning that the PD plots were hard to read and draw insights from. I added a continous variable, TOTAL, which represented the total spend of a customer. Looking at the PDP graph for this feature I could see that the model was overfitting on it. By reducing the model depth I could visually see a difference on the PDP plot and the model performance improved. So there are definitely cases where PDP can be helpful. 
 
-I tried dropping the less important features which resulted in an immediate drop in both accuracy and recall. 
+Interestingly, based on the inferred feature importance from LIME, and the actual feature importance from SHAP I tried dropping the least important features, but unfortunately this significantly depreciated the models performance. 
 
-Based on the LIME I thought that there was a clear threshold were the TOTAL value would predict positive cases. Hence, I tried making it binary based on that feature, but that made the model much worse. 
 
-Lastly, after adding TOTAL to the features (a continuous variable) I looked at the PDP again. Using the graph I could see that the model was overfitting on the TOTAL feature. Arbitrarily reducing the depth of the model immediately improved this and increased the performance of the model. It was a great example of how PDP can also be used to understand and optimise your model. Explain this....
+**Feature Importance**
 
 Comparison of SHAP and sklearn inbuilt feature importance method. This is the “best” model, so it is still overfitting on the TOTAL feature. 
-
 
 | Feature                        | Rank (Feature Importance) | Importance     | Rank (SHAP) | SHAP  |
 | ------------------------------ | ------------------------- | -------------- | ----------- | ----- |
@@ -291,7 +281,7 @@ Comparison of SHAP and sklearn inbuilt feature importance method. This is the �
 
 
 
-<todo> Seperate notebook where you explore this! </todo>
+[My code](RandomForestExplained.ipynb)
 
 
 ## Snowflake experience
