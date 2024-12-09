@@ -207,7 +207,9 @@ I used the results below to select RandomForestClassifier as the model to use.
 
 ## Data Preparation
 
-Explain this. 
+[Data Preparation](DataPreparation.ipynb)
+
+I used sql to extract the desried features and transform them into usable data for the sklearn and Cortex models. Very straightforward. See notebook for more details. 
 
 ## Random Forest model
 
