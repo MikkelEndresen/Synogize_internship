@@ -1,0 +1,4 @@
+datetime,time_step,hidden_size,learning_rate,epochs,mape,mape_last_90,comment
+2024-11-05 13:24:42,20,20,0.001,500,14.78,8.88,"
+weight_decay=1e-4, train/test
+"

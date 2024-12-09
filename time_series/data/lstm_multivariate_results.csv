@@ -1,0 +1,20 @@
+datetime,time_step,hidden_size,learning_rate,epochs,mape,mape_test,comment
+2024-11-05 14:31:08,30,20,0.0001,500,28.44,64.81,"
+weight_decay=1e-3
+"
+2024-11-05 14:37:06,30,50,0.0001,500,28.15,67.86,"
+weight_decay=1e-3, 
+decay_loss
+"
+2024-11-05 14:39:15,30,50,0.0001,500,114.34,39.22,"
+weight_decay=1e-3, 
+decay_loss=0.1
+"
+2024-11-05 14:41:20,30,50,1e-06,500,238.07,54.93,"
+weight_decay=1e-3, 
+decay_loss=0.1
+"
+2024-11-06 15:50:48,30,50,1e-06,500,335.79,1939.49,"
+weight_decay=1e-3, 
+decay_loss=0.1
+"

@@ -1,0 +1,10 @@
+datetime,time_step,hidden_size,learning_rate,epochs,mape,mape_last_90,comment
+2024-11-06 13:25:36,30,20,0.0001,500,3393.42,8215.63,"
+weight_decay=1e-3, train/test cutoff =0.9
+"
+2024-11-06 13:26:36,30,20,0.0001,500,3393.42,8215.63,"
+train/test cutoff = 0.8
+"
+2024-11-06 13:30:24,30,200,0.0001,1000,3339.55,411.27,"
+train/test cutoff = 0.8
+"
