@@ -5,7 +5,9 @@
 
 Note, all code provided for this project are jupyter notebooks downloaded from snowflake. As such, they include functions exclusive to snowflake and are not possible to run outside of a snowflake environment. 
 
-Snowflake compute wh size = XS
+Snowflake compute wh size for all experiments referenced was XS.
+
+My goal for this project was to train a machine learning model to predict whether a customer would become a repeater when given an offer or not. 
 
 **Table of Contents**
 - [Cortex Classification](#cortex-classification)
@@ -62,8 +64,7 @@ _offers_<br>
 
 So to evaluate the effect the implementation of this machine learning model would have one the business itself I need to define a KPI. In this case I am using profit as the kpi. This allows me to establish the estimated profit they recevied from sending out offers to random customers, vs sending out offers to an equal amount of customers selected by my machine learning model. 
 
-I am making the assumption that the cost per offer of something like this woudl be fairly low, but I will get results with various values to compare when it is the most beneficial to use the model. 
-
+Initally, I am making the assumption that the cost per offer of something like this would be fairly low. That being said I ran the profit/loss calculator on the models using various costs per offer ranging from 0.5 to 50 dollars. 
 
 ### Performance Metric
 
@@ -75,19 +76,19 @@ Here I can pick between accuracy, recall, f1, and precision, and they would all 
 
  True Positives / (False Negatives + True Positives)
 
- I initally decided to use recall. The thought was that the cost per offer was low. So I did not really care about False Positives. Meaning that if the model decided to predict many False Positives it would have very little impact on the KPI. The problem with recall is that it does not care about TN. So I don't improve the KPI through a lower cost by more accurately targeting customers. A recall optimised model would have a hard time outperforming the baseline which is to give offers to about 50% of the customers, 30% of which will return. <todo> Test this </todo>
+ I initally decided to use recall. The thought was that the cost per offer was low. So I did not really care about False Positives. Meaning that if the model decided to predict many False Positives it would have very little impact on the KPI. So it is highly likely to capture most of the customers that would return upon receiving an offer. The problem with recall is that it does not care about TN. So I don't improve the companies profit through a lower cost by more accurately targeting customers. That being said, if the cost per offer is low it does not really matter. 
 
 **Precision**
 
  (True Positives) / (True Positives + False Positives)
 
- The formual above indicates that a model trained using precision as the performance metric would attempt to maximise the number of true positives and minimise the number of false positives. So it is trying to be "precise" in that it wants to accurately predict when a customer will return with a high degree of certainty. This means that it might be able to more efficiently be able to identify the majority of the customers that would return upon receiving an offer. That being said it is more likely than recall to miss some true positive cases. 
+ The formual above indicates that a model trained using precision as the performance metric would attempt to maximise the number of true positives and minimise the number of false positives. So it is trying to be "precise" in that it wants to accurately predict when a customer will return with a high degree of certainty. This means that it might be able to more efficiently identify the majority of the customers that would return upon receiving an offer. That being said it is more likely than recall to miss some returning customers. 
 
 **Accuracy**
 
  Accuracy = (True Positives + True Negatives) / (True Positives + True Negatives + False Positives + False Negatives)
 
- As the formula tells us, a model trained for accuracy attempts to maximise the number of true predicitons. Both true negatives and true positives. Compared to recall, it will have less cases of False Positives, and compared to precision it will have less cases of False Negatives. Meaning that overall it will be more accurate, but might suffer compared to recall if the cost of a FP is low or compared to precision if cost of FP is high. 
+ As the formula tells us, a model trained for accuracy attempts to maximise the number of true predicitons. Both true negatives and true positives. Compared to recall, it will have less cases of False Positives, and compared to precision it will have less cases of False Negatives. Meaning that overall it will be more accurate. However, it might suffer compared to recall if the cost of a FP is low or compared to precision if cost of FP is high. 
 
 **F1 Score**
 
@@ -98,20 +99,18 @@ Here I can pick between accuracy, recall, f1, and precision, and they would all 
 
 In summary, which metric a model should be guided by is, in this case, very dependent on the cost of sending out an offer. As I am unsure about what that cost is I have decided to provide a range of values and see for which costs each model performs best.
 
-**Results**
+### Results
 
 I calculated the profit by finding a value_of_returning_customer nuber based on the avereage spend per shop and the average number of repeattrips. The profit for a model would then be number of true positives times the value_of_returning_customer minus all the positive predictions times the cost_of_offer.
-After running this for a ranging cost on all models I found that they are better in different scenarios. As you can see on the chart, from 0.5 to around 23 dollars cost per offer, the baseline performs best. Meaning that the default version of randomly sending out offers is best. Then my recall optimised model takes over. Next, at around cost 37 and on the accuracy model performs best. The reason for this is that the cost of offers have risen so high that it is beneficial to predict the true negatives. 
+After running this for a ranging cost on all models I found that they are better in different scenarios. As you can see on the chart, from 0.5 to around 23 dollars cost per offer, the baseline performs best. Meaning that the default version of randomly sending out offers is best. Then my recall optimised model takes over. Next, from around cost 37 to 50 the accuracy model performs best. The reason for this is that the cost of offers have risen so high that it is beneficial to avoid false positives. 
 
 
 ![Results](images/STREAMLIT_MEDIA_FILE_D1792B29235C4997B0EA0E39D1734B19.png "Test")
 
 
-There is one error with my results that I made when desigining this experiment. Since I need the offers to predict whether a customer becomes a repeater or not, I was unable to make the prediction on the full dataset as only aroung 50% of the customers received offers. If I had been able to forsee this I could have tried to make my prediction without those features. That means that the baseline would be to randomly select 50% of the dataset. And of taht 50% around 30% were returners. However, with a precision or accuracy model I might be able to pick almost all the returners from the full dataset doubling the number of returners. This is a great usecase for these models that can be explored later. 
+There is one error with my results that I made when desigining this experiment. Since I need the offers to predict whether a customer becomes a repeater or not, I was unable to make the prediction on the full dataset as only aroung 50% of the customers received offers. I don't have access to the remaining data. If I had been able to forsee this I could have tried to make my prediction without those features. That means that the baseline would be to randomly select 50% of the dataset and of that 50% around 30% were returners. However, with a precision or accuracy model I might be able to pick almost all the returners from the full dataset doubling the number of returners, while still keeping the number of offers the same as in this case. This is a great usecase for these models that can be explored later. 
 
 View the notebook I used to calculate these results here: [KPI](kpi.ipynb)
-
----
 
 
 ## Model Registry
@@ -120,7 +119,7 @@ View the notebook I used to calculate these results here: [KPI](kpi.ipynb)
 
 Link to Snowflake docs on model registry: [link](https://docs.snowflake.com/en/developer-guide/snowflake-ml/model-registry/overview#calling-model-methods)
 
-This is a snowflake function that allows you to save your ml models when created by using the supported libraries like sklearn and pytorch. It comes with several different attributes, for example, like you can set your evaluation metrics and store relevant information with the model. 
+This is a snowflake function that allows you to save your ml models when created by using the supported libraries like sklearn and pytorch. It comes with several different attributes, for example, you can set your evaluation metrics and store relevant information with the model. 
 
 It takes about 55s to log the model.
 
@@ -128,7 +127,7 @@ Interestingly there are two main methods of running inference on saved models.
 
 **Model.run**
 
-Using model.run, you simply call the reference to your model. Then you use the inbuilt model.run function to run it. This means you don't load the model back into your notebook, hence the low load time. The load time here refers to the time it takes to reference the correct version of your model in the registry. You pass the function the X_test data and the specified function you wish to run, in this case "predict". It returns the predictions in around 5s
+Using model.run, you simply call the reference to your model. Then you use the inbuilt model.run function to run it. This means you don't load the model back into your notebook, hence the low load time. The load time here refers to the time it takes to reference the correct version of your model in the registry. You pass the function the X_test data and the specified function you wish to run, in this case "predict". It returns the predictions in around 5s.
 
 Load time: 0.45s
 Prediction time: 5.10s
@@ -137,7 +136,7 @@ Total time 5.55s
 
 **Model.predict**
 
-In this case you load the model back into your workspace/notebook and then call model.predict like you would normally. It takes just under 6s, 5.8 ish, to load the model back into the notebook and then 0.35s to do the prediction. This method is preferable if you have to do multiple predictions in one session.  
+In this case you load the model back into your workspace/notebook and then call model.predict like you would normally. It takes just under 6s to load the model back into the notebook and then 0.35s to do the prediction. This method is preferable if you have to do multiple predictions in one session.  
 
 Load time: 3.54s
 Prediction time 0.36s
@@ -147,7 +146,7 @@ Total time 5.55s
 ## Cortex Classification
 
 
-Snowflake has an "inbuilt" classification that is based on a gradient boost machine. I tried it on this classification problem in order to compare it to the performance of my manually defined models both in terms of accuracy, but also in usability and time. 
+Snowflake has an inbuilt sql defined classification function that is based on a gradient boost machine. I tried it on this classification problem in order to compare it to the performance of my manually defined models both in terms of accuracy, but also in usability and time. 
 
 Main Takeaways:
 - The data preparation is a bit inconvenient. You can use python, but it does require you to load the data into df's before creating a new table in snowflake. The second option is to use sql so a lot of the inbuilt comforts form pandas is gone, but it is definietlely doable. Either way it is not too troublesome compared to the alternative. 
@@ -163,6 +162,8 @@ Prediction time: 10
 
 Accuracy: 73.94%
 
+Meaning it has the highest accuracy of all the models, around the same training time, but a 5-10x prediciton time depending on which model you compare it to. 
+
 KPI - It outperforms the best random forest accuracy optimised model in terms of profit and loss for the business. It is the best model overall after cost per offer reaches around 37 dollars. 
 
 ![Cortex Model KPI Comparison](images/STREAMLIT_MEDIA_FILE_998F9BD8FE82470DA6809C465FBD6DA3.png)
@@ -174,7 +175,7 @@ Read about it here: [Snowflake Cortex Classifcation](https://docs.snowflake.com/
 
 ## Lazypredict results
 
-It's useful, but very resource-intensive and time-consuming to run. Used up more or less all $400 credits running on an S Warehouse. Ran for a few hours. 
+Lazypredict is a library that runs several default machine learning models on your data so you can get an overview of what methods might work. It's useful, but very resource-intensive and time-consuming to run. Used up more or less all $400 credits running on an S Warehouse. Ran for a few hours. 
 
 I used the results below to select RandomForestClassifier as the model to use. 
 
@@ -218,7 +219,7 @@ I used sql to extract the desried features and transform them into usable data f
 
 **Data Preparation**
 - Easy to import from database into snowflake df's and then turn those into Pandas df's
-- Time to run the data imports, convert to pandas df, and do the train test split was aorun 1.5s. 
+- Time to run the data imports, convert to pandas df, and do the train test split was around 1.5s. 
 
 **Performance Metric**
 - On the assumption that the FP cost was low I chose to use recall as my main performance metric. However, as you can read about in the KPI section I also ran the models for F1, accuracy, and precision.
@@ -229,13 +230,12 @@ I chose to use a randomised search to optimise the models parameters. Compared t
 In all cases the models saw significant improvement with hyperparameter optimisation compared to default so it is recommended. 
 
 **Imbalanced dataset problem**
-The dataset consisted of 27% positive cases and the rest negative. To deal with this I tried undersampling, oversampling, smote, and the Random FOrest inbuilt parameter class_weight='balanced'. For recall, the models improved slightly using these methods, but mostly with class_weight='balanced'. However, the improvement was marginal and also had a negative effect on the accuracy of the model. 
+The dataset consisted of 27% positive cases and the rest negative. To deal with this I tried undersampling, oversampling, smote, and the Random Forest inbuilt parameter class_weight='balanced'. For recall, the models improved slightly using these methods, but mostly with class_weight='balanced'. However, the improvement was marginal and also had a negative effect on the accuracy of the model.
 
 In terms of training time, undersampling halved the training time, oversampling and smote was about 50% slower, and class_weight parameter had a training time close to a default model. 
 
-
 **Probability thresholds**
-To improve recall I looked at different probability thresholds. As expected it significantly increased the recall perfomrance from 0.29 to 0.32
+To improve recall I looked at different probability thresholds. As expected it significantly increased the recall performance from 0.29 to 0.32. As you can see below however, it did give a very low accuracy of 0.289 showing the result of all the False Positive predictions.
 
 [Notebook with the relevant code](RandomForest.ipynb)
 
@@ -246,7 +246,7 @@ Some selected results displayed
 | Model Name | Accuracy | Recall | F1 | Precision | Training Time (s) | Test Time (s) |
 |------------|-----------|-------|----|-----------|-------------------|---------------|
 | Random Forest Optimal Recall | 0.6523491191 | 0.2956083018 | N.A  | N.A. | 62.923414946 + | 1.899834394 | 
-| Random Forest Default |,0.6371048357 | 0.3255360624 | N.A  | N.A. | 32.185394287 | 1.175194263 | 
+| Random Forest Default | 0.6371048357 | 0.3255360624 | N.A  | N.A. | 32.185394287 | 1.175194263 | 
 | Random Forest Optimal Recall Threshold - 0.0289 | 0.3164125953 | 0.9566563467 | N.A  | N.A. | 15.168264627 | 1.011759043 | 
 | Random Forest Optimal Precision | NA. | 0.1787639032 | N.A  | 0.46873120865904994 | 20.449402094 | 0.5532448292 | 
 | Random Forest Optimal Accuracy | 0.7210733475 | 0.1776172457 | 0.46825876662636035 | 0.2575442680189542 | 21.262335539 | 0.5760011673 |
@@ -301,4 +301,6 @@ Cost considerations:
 Notebook usability
 - Some basic comforts like keyboard shortcuts etc. that you are used to from working in code editors or on jupyter notebooks don't yet exist. 
 - The error handling is terrible. It is hard to debug both when writing SQL and Python as the messages often give little indication as to what failed. For SQL errors I would run them in a worksheet first to debug and then copy them over into a Notebook.
-- The notebooks are somewhat unreliable in that they will stop working or throw unexplainable edits. Usually fixed by restarting the notebook.
+- The notebooks are somewhat unreliable in that they will stop working or throw unexplainable errors. Usually fixed by restarting the notebook.
+
+Overall, it is very handy to be able to run sql and python in the same notebook and it feels great having such little "distance" between you ml models and the data. It makes it much easier to make changes and updates. 
