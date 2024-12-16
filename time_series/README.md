@@ -23,7 +23,7 @@ The dataset contains sales data from many different companies. I am attempting t
 There is one important note in the data. For all the models I have run them on two different datasets. There is missing data starting in march of the second year, meaning that there is a changepoint. As such, the models have been trained and evaluated on the data up until that changepoint. In addition, I have for all the models trained them and evaluated them on the full time range including the changepoint. This is to check the models capability of detecting and adjusting to changepoints in time series.
 
 An example of what the data with the changepoint looks like
-![alt text](image-5.png)
+![alt text](img/image-5.png)
 
 For the models I do some outlier handling. I experimented with different z-scores using a histogram, like you can see in [prophet.ipynb](prophet.ipynb) in order to find the optimal one. I ended up selecting a z-score threhsold of 2. I sett all other values equal to the mean. 
 
@@ -32,7 +32,7 @@ There was a very little difference in how the model performed based on whether I
 
 As you can see in the graph below, some of the spikes are removed.
 Data after z-score normalisation:
-![alt text](image-6.png)
+![alt text](img/image-6.png)
 
 ## Sarima Model
 
@@ -48,10 +48,10 @@ Forecasting 60 days into the future:
 
 Manually selecting the various hyperparameters gives a
 MAPE of 9.19% and took around 17s to fit.<br>
-![alt text](image-1.png)
+![alt text](img/image-1.png)
 
 The automated SARIMA, automatically selecting the hyperparameters gives a MAPE of 9.21%. It took 129.937 seconds, or about 2 minutes to find and fit this model.<br>
-![alt text](image-2.png)
+![alt text](img/image-2.png)
 
 
 ## Prophet Model
@@ -60,11 +60,11 @@ Using facebooks prophet model.
 
 Cross validation with a period of 15 days and a horizon of 15 days gave a MAPE of 11.24%. That is 120 days forecasted, 15 days at a time. 
 
-![alt text](image-3.png)
+![alt text](img/image-3.png)
 
 Using a train test split like with the SARIMA model I get a MAPE of 10.37%
 
-![alt text](image-4.png)
+![alt text](img/image-4.png)
 
 #### Changepoint Detection
 
@@ -83,7 +83,7 @@ The model with a manual changepoint gets a MAPE of 378.02% on the same condition
 Interestingly the model that detects the changepoint itself returns a list of 25 changepoints starting on the 2012-03-18, much earlier then the manually selecte changepoint. 
 
 150.67% MAPE chart:
-![alt text](image-8.png)
+![alt text](img/image-8.png)
 
 ## Neural Prophet model
 
@@ -153,3 +153,31 @@ Similarily, looking at the last 90 days, the graph looks much better visually, d
 
 
 ## Best model, aggregate results
+
+Up until now I have only been running the models on the data from one company. Now, I will compare my best models by running them across the top 100 companies, in terms of sales revenue. Then for the prophet models I also ran them on the top 1000. The goal is to see which model would be best suited for production. 
+
+The models I will evaluate is first the prophet with optimised parameters, the default prophet, and the neural prophet. 
+
+When running these models on one company the neural prophet had a slightly better MAPE, but at the cost of a significantly longer train/predict time. So I will compare their results here to see which is best. 
+
+The reason why I chose to run an optimised prophet vs a default is because I am interested to see which model best generalises across companies. 
+
+#### Top 100 companies
+The neural prophet gets an average MAPE of 22.19%.
+The defualt prophet gets an average MAPE of 22.3%.
+The optimised prophet gets an average MAPE of 33.55%.
+
+Given the significantly larger train time for neural prophet, and only a very small increase in MAPE compared to the default prophet, I would not choose to put the model into production. 
+Interestingly, the optimised prophet performs significantly worse than the default. 
+
+#### Top 1000 companies
+
+The defualt prophet gets an average MAPE 131.48%%.
+The optimised prophet gets an average MAPE of 105.5%.
+
+Here the optimised prophet comes out ahead. It seems to me that on the top 100 comapnies, the optimised prophet had a couple more outliers in terms of performance compared to the default. As such, its performance was worse, but when generalised over the top 1000 companies, it is the better model. 
+Training time for each of the prophet models was under 0.1s, wheras for the neural prophet it ranged from 15 to 19s. This is on an XL Warehouse with Snowflake. 
+
+
+
+In conclusion, the optmised prophet model would be best suitable for production as it combines optimal performance, with a low cost of compute.
