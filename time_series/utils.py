@@ -89,3 +89,17 @@ def download_csv():
     df.to_csv(file_path, mode='a', header=False, index=False)
     
     return "success"
+
+
+def csv_to_df_1():
+
+    df = pd.read_csv("data/company_revenue_w_cutoff.csv")
+
+    return df
+
+def csv_to_df_2():
+
+    df = pd.read_csv("data/company_revenue.csv")
+
+    return df
+
