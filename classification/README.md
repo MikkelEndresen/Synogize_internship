@@ -110,6 +110,9 @@ After running this for a ranging cost on all models I found that they are better
 
 There is one error with my results that I made when desigining this experiment. Since I need the offers to predict whether a customer becomes a repeater or not, I was unable to make the prediction on the full dataset as only aroung 50% of the customers received offers. I don't have access to the remaining data. If I had been able to forsee this I could have tried to make my prediction without those features. That means that the baseline would be to randomly select 50% of the dataset and of that 50% around 30% were returners. However, with a precision or accuracy model I might be able to pick almost all the returners from the full dataset doubling the number of returners, while still keeping the number of offers the same as in this case. This is a great usecase for these models that can be explored later. 
 
+If I for example extrapolate the percentages from the precision model, one I assume to be the best, I find that it would send out 84,900 offers to the full dataset of customers. About 50,000 of which would be returners giving the model a profit of 6,725,500 on a  cost per offer of 5 dollar. That is compared to the baseline of 5,041,500, meaning there is a 33.89% increase in profit. 
+
+
 View the notebook I used to calculate these results here: [KPI](kpi.ipynb)
 
 
@@ -154,6 +157,8 @@ Main Takeaways:
 - In terms of XAI, it has an inbuilt explainability function using SHAP, but I could not make it work despite utilising the provided code in the docs. However, it does have a feature importance function that works.
 - There are inbuilt functinos to calcualte the most common performance metrics and also to calcualte probability thresholds which I found very useful. 
 - A drawback with the inbuilt performance metrics is that they seem to be done on a part of the training set. I was unable to find the same metrics on the test set after making the predictions. Hence, I had to export the table to a pandas df and calculate the various metrics using sklearn. 
+- Another drawback is that you cannot select the performance metric. It optimises for accuracy and nothing else. 
+
 
 **Metrics**
 
