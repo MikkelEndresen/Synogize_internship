@@ -1,5 +1,17 @@
 # Anomaly Detection
 
+## Overview
+
+Using a dataset with information on taxi trips in new york in order to compare KMEANS, LOF, and Isolation Forest models. 
+
+- [Results](#results)
+- [Data](#data)
+- [KMEANS](#kmeans)
+- [LOF](#lof)
+- [Isolation Forest](#isolation-forest)
+- [Five Datasets](#five-datasets)
+- [Takeaways](#for-next-time)
+
 ## RESULTS
 
 I have recorded pairplots and the mean and variance of both anomalies and normal points from the mdoels to help evaluate which is best.
@@ -135,4 +147,4 @@ And looking at the unequal predictions they are usually for null values in trip_
     - You can use this to run a different notebook from a notebook. Meaning, it will allow you to utilise functions in a different notebook. However, it is not available for the comunnity edition. 
 
 
-- Do more investigations on the datapoints that were found to be anomalies
+- Do more investigations on the datapoints that were found to be anomalies. It is difficult to find any ground truths when doing the anlaysis so investigation into the anomalies is where the value can be found. 
