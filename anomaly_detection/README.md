@@ -11,12 +11,13 @@ I chose the isolation forest model as my best, here is why:
 - ISO and Kmeans have similar pairplots but, it took about 6s to train and fit ISO, whereas the kmeans spent 20s
 
 
-So for the multiple dataset evaluation I used the Isolation Forest model. 
-
-
+So for the multiple dataset evaluation I used the Isolation Forest model. See the results [here](#five-datasets)
 
 
 ## Data 
+
+Data can be downloaded using [this notebook](anomaly_detection/Download_Taxi_Dataset_from_Google_Drive_NEW_VERSION(1).ipynb)
+
 
 Features:
 - trip_distance
