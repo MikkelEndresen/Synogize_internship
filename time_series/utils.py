@@ -5,8 +5,8 @@ import pandas as pd
 def create_session():
     session = Session.builder.configs({
         'user': 'mikkel',
-        'password': 'qPz4F6b,Bdkx@v&',
-        'account': 'DFBRTSW-VI83989',
+        'password': '?@_JYG_TkJ9UpSN',
+        'account': 'IXIZWPK-DG47537',
         'database': 'ML',
         'schema': 'retail_store'
     }).create()
@@ -64,6 +64,12 @@ def get_time_series_2():
     return df
 
 def z_score_outlier(df, z_score):
+
+    df = df.dropna()
+
+    # Drop rows where any column has a 0 value
+    df = df[(df != 0).all(axis=1)]
+
     mean = df['y'].mean()
     std = df['y'].std()
 
@@ -73,8 +79,19 @@ def z_score_outlier(df, z_score):
     outlier_index = np.where(np.abs(z_scores) > threshold)[0]
     
     print("Dropping "+str(len(outlier_index)) + " rows.")
-    
+    print(len(df))
+
     df.drop(index=outlier_index,inplace=True)
+    print(len(df))
+    
+    smallest_index = df['y'].idxmin()
+    print(smallest_index)
+    print(df['y'].min())
+
+    # Remove the row with the smallest value
+    df = df.drop(index=smallest_index)
+
+    print(len(df))
 
     return df
 
@@ -94,12 +111,18 @@ def download_csv():
 def csv_to_df_1():
 
     df = pd.read_csv("data/company_revenue_w_cutoff.csv")
+    df.columns = ['ds', 'y']
+    df['ds'] = pd.to_datetime(df['ds'])
+    df = df.sort_values(by='ds')
 
     return df
 
 def csv_to_df_2():
 
     df = pd.read_csv("data/company_revenue.csv")
+    df.columns = ['ds', 'y']
+    df['ds'] = pd.to_datetime(df['ds'])
+    df = df.sort_values(by='ds')
 
     return df
 
